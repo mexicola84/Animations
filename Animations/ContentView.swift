@@ -7,6 +7,26 @@
 
 import SwiftUI
 
+// custom animations with view modifier
+struct CornerRotateModifier: ViewModifier {
+    let amount: Double
+    let anchor: UnitPoint
+    
+    func body(content: Content) -> some View {
+        content
+            .rotationEffect(.degrees(amount), anchor: anchor)
+            .clipped()
+    }
+}
+
+extension AnyTransition {
+    static var pivot: AnyTransition {
+        .modifier(
+            active: CornerRotateModifier(amount: -90, anchor: .topLeading),
+            identity: CornerRotateModifier(amount: 0, anchor: .topLeading))
+    }
+}
+
 struct ContentView: View {
 //    @State private var animationAmount = 1.0 //impicit animations
 //    @State private var animationAmount = 2.0 //implicit binding animations
@@ -17,8 +37,11 @@ struct ContentView: View {
 //    @State private var enabled = false
 //    @State private var dragAmount = CGSize.zero // animating gestures
     
-    //showing and hiding views with transition
     @State private var isShowingRed = false
+    
+
+    
+    
     
     var body: some View {
         //        // day 32 implicit animations
@@ -123,18 +146,36 @@ struct ContentView: View {
         //
         
         //showing and hiding views with transition
-        VStack {
-            Button("Tap me") {
-                withAnimation {
-                    isShowingRed.toggle()
-                }
-            }
+//        VStack {
+//            Button("Tap me") {
+//                withAnimation {
+//                    isShowingRed.toggle()
+//                }
+//            }
+//
+//            if isShowingRed {
+//                Rectangle()
+//                    .fill(.red)
+//                    .frame(width:200, height: 200)
+//                    .transition(.asymmetric(insertion: .scale, removal: <#T##AnyTransition#>))
+//            }
+//        }
+        
+        ZStack {
+            Rectangle()
+                .fill(.blue)
+                .frame(width: 200, height: 200)
             
             if isShowingRed {
                 Rectangle()
                     .fill(.red)
-                    .frame(width:200, height: 200)
-                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
+                    .frame(width: 200, height: 200)
+                    .transition(.pivot)
+            }
+        }
+        .onTapGesture {
+            withAnimation {
+                isShowingRed.toggle()
             }
         }
     }

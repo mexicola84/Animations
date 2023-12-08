@@ -12,10 +12,13 @@ struct ContentView: View {
 //    @State private var animationAmount = 2.0 //implicit binding animations
 //    @State private var animationAmount = 0.0 // explicit animations
 //    @State private var enabled = false
-    let letters = Array("Hello SwiftUI") // animating gestures
+//    let letters = Array("Hello SwiftUI") // animating gestures
+//
+//    @State private var enabled = false
+//    @State private var dragAmount = CGSize.zero // animating gestures
     
-    @State private var enabled = false
-    @State private var dragAmount = CGSize.zero // animating gestures
+    //showing and hiding views with transition
+    @State private var isShowingRed = false
     
     var body: some View {
         //        // day 32 implicit animations
@@ -100,24 +103,40 @@ struct ContentView: View {
         //                    }
         //            )
         //            .animation(.bouncy, value: dragAmount) //implicit animation
-        HStack(spacing: 0) {
-            ForEach(0..<letters.count, id: \.self) { num in
-                Text(String(letters[num]))
-                    .padding(5)
-                    .font(.title)
-                    .background(enabled ? .blue : .red)
-                    .offset(dragAmount)
-                    .animation(.linear.delay(Double(num) / 20), value: dragAmount)
+        //      Stack(spacing: 0) {
+        //         ForEach(0..<letters.count, id: \.self) { num in
+        //             Text(String(letters[num]))
+        //                 .padding(5)
+        //                 .font(.title)
+        //                 .background(enabled ? .blue : .red)
+        //                 .offset(dragAmount)
+        //                 .animation(.linear.delay(Double(num) / 20), value: dragAmount)
+        //         }
+        //
+        //      gesture(
+        //         DragGesture()
+        //             .onChanged { dragAmount = $0.translation }
+        //             .onEnded { _ in
+        //                     dragAmount = .zero
+        //                 enabled.toggle()
+        //             }
+        //
+        
+        //showing and hiding views with transition
+        VStack {
+            Button("Tap me") {
+                withAnimation {
+                    isShowingRed.toggle()
+                }
+            }
+            
+            if isShowingRed {
+                Rectangle()
+                    .fill(.red)
+                    .frame(width:200, height: 200)
+                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
             }
         }
-        .gesture(
-            DragGesture()
-                .onChanged { dragAmount = $0.translation }
-                .onEnded { _ in
-                        dragAmount = .zero
-                    enabled.toggle()
-                }
-        )
     }
 }
 
